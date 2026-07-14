@@ -1,0 +1,34 @@
+{
+  "name": "stadiumops-pro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "StadiumOps Pro — AI-powered stadium operations command center for FIFA World Cup 2026 (PromptWars Challenge 4)",
+  "author": "StadiumOps Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "chart.js": "^4.4.3",
+    "react-chartjs-2": "^5.2.0",
+    "papaparse": "^5.4.1",
+    "xlsx": "^0.18.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2"
+  },
+  "devDependencies": {
+    "jest": "29.7.0",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5"
+  }
+}
