@@ -3,6 +3,7 @@
 > **PromptWars Challenge 04 · Smart Stadiums & Tournament Operations**  
 > **Chosen Vertical**: 🏟️ Venue Staff (Operations Commander)  
 > **Core Focus**: Crowd Management & Real-Time Operational Intelligence  
+> **Live Demo**: [stadium-ops-nu.vercel.app](https://stadium-ops-nu.vercel.app/)  
 > **GitHub Repository**: [github.com/shlok772006/StadiumOps](https://github.com/shlok772006/StadiumOps)
 
 ---
