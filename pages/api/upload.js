@@ -12,6 +12,34 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "headers and sampleRows are required." });
     }
 
+    if (!Array.isArray(headers) || !Array.isArray(sampleRows)) {
+      return res.status(400).json({ error: "headers and sampleRows must be arrays." });
+    }
+
+    // Input limitations and validation
+    if (headers.length > 100) {
+      return res.status(400).json({ error: "Too many columns. Maximum allowed is 100." });
+    }
+    if (sampleRows.length > 50) {
+      return res.status(400).json({ error: "Too many sample rows. Maximum allowed is 50." });
+    }
+    if (typeof totalRows !== "number" || totalRows < 0) {
+      return res.status(400).json({ error: "totalRows must be a non-negative number." });
+    }
+
+    // Clean inputs
+    const cleanFileName = String(fileName || "uploaded_data").replace(/[^a-zA-Z0-9_\-\.]/g, "").slice(0, 100);
+    const cleanHeaders = headers.map(h => String(h).replace(/<[^>]*>/g, "").slice(0, 50));
+    const cleanSampleRows = sampleRows.map(row => {
+      if (typeof row !== "object" || row === null) return {};
+      const newRow = {};
+      Object.keys(row).forEach(k => {
+        const cleanKey = String(k).replace(/<[^>]*>/g, "").slice(0, 50);
+        newRow[cleanKey] = String(row[k]).replace(/<[^>]*>/g, "").slice(0, 200);
+      });
+      return newRow;
+    });
+
     const system = `You are the data analysis module of StadiumOps AI. A user has uploaded a dataset for analysis.
 Analyze the data and provide:
 1. DATA SUMMARY — What this data represents, key columns, and data types
@@ -22,12 +50,12 @@ Analyze the data and provide:
 
 Use specific numbers from the data. Be concise but thorough.`;
 
-    const userPrompt = `File: ${fileName || "uploaded_data"}
+    const userPrompt = `File: ${cleanFileName}
 Total rows: ${totalRows}
-Columns: ${headers.join(", ")}
+Columns: ${cleanHeaders.join(", ")}
 
-Sample data (first ${sampleRows.length} rows):
-${sampleRows.map((row, i) => `Row ${i + 1}: ${JSON.stringify(row)}`).join("\n")}
+Sample data (first ${cleanSampleRows.length} rows):
+${cleanSampleRows.map((row, i) => `Row ${i + 1}: ${JSON.stringify(row)}`).join("\n")}
 
 Analyze this data now.`;
 

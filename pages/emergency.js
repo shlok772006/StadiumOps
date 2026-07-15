@@ -1,3 +1,8 @@
+/**
+ * pages/emergency.js
+ * Emergency management module with SOS button, incident reporting form,
+ * AI-generated action plans, nearest resource finder, and active incident tracker.
+ */
 import { useState } from "react";
 import Head from "next/head";
 import { GATES, EMERGENCY_PROTOCOLS, AMENITIES, getLiveCrowdDensity } from "../lib/stadiumData";
@@ -47,7 +52,7 @@ export default function Emergency({ crowd }) {
       } else {
         setPlanError(formatApiError(data, "Could not generate action plan."));
       }
-    } catch {
+    } catch (_e) {
       setPlanError("Network error generating action plan.");
     } finally {
       setPlanLoading(false);
@@ -60,7 +65,10 @@ export default function Emergency({ crowd }) {
 
   return (
     <>
-      <Head><title>Emergency — StadiumOps Pro</title></Head>
+      <Head>
+        <title>Emergency — StadiumOps Pro</title>
+        <meta name="description" content="Emergency management console with AI-generated action plans, SOS button, incident reporting, and nearest resource finder for stadium operations." />
+      </Head>
 
       <div className="row fade-up" style={{ justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
         <div>
@@ -119,7 +127,7 @@ export default function Emergency({ crowd }) {
           {planError && <p role="alert" style={{ color: "var(--accent-red)", marginTop: 14, fontSize: "0.85rem" }}>{planError}</p>}
 
           {actionPlan && (
-            <div className="card fade-up" style={{ marginTop: 18, borderColor: "var(--accent-red)", background: "var(--accent-red-soft)" }}>
+            <div className="card fade-up" style={{ marginTop: 18, borderColor: "var(--accent-red)", background: "var(--accent-red-soft)" }} aria-live="assertive">
               <p className="card-header accent-red">🧠 AI-GENERATED ACTION PLAN</p>
               <div style={{ fontSize: "0.88rem", color: "var(--text-primary)" }}>
                 <FormattedContent text={actionPlan} />

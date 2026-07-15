@@ -78,6 +78,10 @@ describe("Stadium Data Model", () => {
       expect(p).toHaveProperty("label");
       expect(p).toHaveProperty("gates");
       expect(Object.keys(p.gates)).toHaveLength(GATES.length);
+      Object.values(p.gates).forEach((val) => {
+        expect(val).toBeGreaterThanOrEqual(10);
+        expect(val).toBeLessThanOrEqual(100);
+      });
     });
   });
 
@@ -87,6 +91,10 @@ describe("Stadium Data Model", () => {
     expect(weather).toHaveProperty("temperature");
     expect(weather).toHaveProperty("humidity");
     expect(weather.temperature).toBeGreaterThan(0);
+    expect(weather.humidity).toBeGreaterThanOrEqual(0);
+    expect(weather.humidity).toBeLessThanOrEqual(100);
+    expect(weather.windSpeed).toBeGreaterThanOrEqual(0);
+    expect(weather.uvIndex).toBeGreaterThanOrEqual(0);
   });
 
   test("getCurrentAttendance returns a positive number", () => {

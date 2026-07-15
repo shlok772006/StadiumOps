@@ -1,3 +1,9 @@
+/**
+ * pages/upload.js
+ * Data upload page supporting CSV and JSON file parsing.
+ * Provides drag-and-drop interface, data preview table, and
+ * AI-powered analysis of uploaded datasets.
+ */
 import { useState, useRef } from "react";
 import Head from "next/head";
 import FormattedContent from "../components/FormattedContent";
@@ -68,13 +74,16 @@ export default function Upload() {
       const result = await res.json();
       if (res.ok) setAnalysis(result.analysis);
       else setError(result.error || "Analysis failed.");
-    } catch { setError("Network error during analysis."); }
+    } catch (_e) { setError("Network error during analysis."); }
     finally { setAnalysisLoading(false); }
   };
 
   return (
     <>
-      <Head><title>Data Upload — StadiumOps Pro</title></Head>
+      <Head>
+        <title>Data Upload — StadiumOps Pro</title>
+        <meta name="description" content="Upload CSV or JSON datasets for AI-powered analysis. Get instant operational insights from your stadium data." />
+      </Head>
 
       <div className="fade-up" style={{ marginBottom: 24 }}>
         <p className="card-header accent-green">DATA MANAGEMENT</p>

@@ -1,6 +1,6 @@
-import { GATES, SECTIONS, AMENITIES, TRANSPORT_OPTIONS } from "../../lib/stadiumData";
+const { GATES, SECTIONS, AMENITIES, TRANSPORT_OPTIONS } = require("../../lib/stadiumData");
 
-export default function handler(req, res) {
+function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed. Use GET." });
   }
@@ -67,3 +67,5 @@ export default function handler(req, res) {
 
   return res.status(200).json({ results: results.slice(0, 10) });
 }
+
+module.exports = handler;

@@ -1,7 +1,12 @@
+/**
+ * pages/analytics.js
+ * Operational analytics dashboard with interactive charts showing gate
+ * density, vendor performance, transit load factors, and weather data.
+ */
 import { useMemo } from "react";
 import Head from "next/head";
 import ChartWidget from "../components/ChartWidget";
-import { getLiveCrowdDensity, getWeatherData, VENDOR_DATA, TRANSPORT_OPTIONS, GATES } from "../lib/stadiumData";
+import { getLiveCrowdDensity, getWeatherData, VENDOR_DATA, TRANSPORT_OPTIONS } from "../lib/stadiumData";
 
 export default function Analytics({ crowd, weather }) {
   const stats = useMemo(() => {
@@ -14,11 +19,6 @@ export default function Analytics({ crowd, weather }) {
     return { avgDensity, avgWait, totalFlow, criticalCount, busyCount, normalCount };
   }, [crowd]);
 
-  const vendorStats = useMemo(() => {
-    const totalSales = VENDOR_DATA.reduce((s, v) => s + v.sales, 0);
-    const avgStock = Math.round(VENDOR_DATA.reduce((s, v) => s + v.stock, 0) / VENDOR_DATA.length);
-    return { totalSales, avgStock };
-  }, []);
 
   const gateChartData = useMemo(() => {
     return {
@@ -99,7 +99,10 @@ export default function Analytics({ crowd, weather }) {
 
   return (
     <>
-      <Head><title>Analytics — StadiumOps Pro</title></Head>
+      <Head>
+        <title>Analytics — StadiumOps Pro</title>
+        <meta name="description" content="Operational analytics with interactive charts for gate density, vendor performance, transit load factors, and weather conditions." />
+      </Head>
 
       <div className="fade-up" style={{ marginBottom: 24 }}>
         <p className="card-header accent-green">OPERATIONAL ANALYTICS</p>

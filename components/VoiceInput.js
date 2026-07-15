@@ -1,8 +1,11 @@
-import { useState, useRef, useCallback } from "react";
-
 /**
- * Web Speech API voice input. Falls back gracefully if unsupported.
+ * components/VoiceInput.js
+ * Web Speech API voice input button with graceful fallback.
+ * Also exports a speak() utility for text-to-speech output.
  */
+import { useState, useRef, useCallback } from "react";
+import PropTypes from "prop-types";
+
 export default function VoiceInput({ onResult, disabled }) {
   const [listening, setListening] = useState(false);
   const recRef = useRef(null);
@@ -59,8 +62,17 @@ export default function VoiceInput({ onResult, disabled }) {
   );
 }
 
+VoiceInput.propTypes = {
+  /** Callback invoked with transcribed text when voice recognition completes */
+  onResult: PropTypes.func.isRequired,
+  /** Whether the button is disabled */
+  disabled: PropTypes.bool,
+};
+
 /**
  * Speak text aloud using the Speech Synthesis API.
+ * Cancels any in-progress speech before starting.
+ * @param {string} text - the text to speak aloud
  */
 export function speak(text) {
   if (typeof window === "undefined" || !window.speechSynthesis) return;

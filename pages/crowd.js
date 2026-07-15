@@ -1,3 +1,8 @@
+/**
+ * pages/crowd.js
+ * Crowd analytics page with live density heatmap, gate ranking,
+ * predictive line charts, and AI-powered crowd analysis.
+ */
 import { useState, useEffect, useMemo } from "react";
 import Head from "next/head";
 import StadiumMap from "../components/StadiumMap";
@@ -37,7 +42,7 @@ export default function CrowdAnalytics({ crowd: initialCrowd, predictions: initi
       const data = await res.json();
       if (res.ok) setAnalysis(data.analysis);
       else setAnalysisError(data.error || "Failed to load analysis.");
-    } catch { setAnalysisError("Network error."); }
+    } catch (_e) { setAnalysisError("Network error."); }
     finally { setAnalysisLoading(false); }
   };
 
@@ -65,7 +70,10 @@ export default function CrowdAnalytics({ crowd: initialCrowd, predictions: initi
 
   return (
     <>
-      <Head><title>Crowd Analytics — StadiumOps Pro</title></Head>
+      <Head>
+        <title>Crowd Analytics — StadiumOps Pro</title>
+        <meta name="description" content="Real-time crowd density analytics with predictive gate congestion forecasting and AI-powered recommendations for stadium operations." />
+      </Head>
 
       <div className="row fade-up" style={{ justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
         <div>
@@ -143,6 +151,7 @@ export default function CrowdAnalytics({ crowd: initialCrowd, predictions: initi
               <tr>
                 <th>Time</th>
                 {GATES.map((g) => <th key={g.id}>Gate {g.id}</th>)}
+                <th>Confidence</th>
               </tr>
             </thead>
             <tbody>
@@ -158,6 +167,9 @@ export default function CrowdAnalytics({ crowd: initialCrowd, predictions: initi
                       </td>
                     );
                   })}
+                  <td className="mono" style={{ color: "var(--accent-cyan)", fontSize: "0.78rem" }}>
+                    {p.label === "Now" ? "Measured" : p.timeOffset <= 15 ? "High" : p.timeOffset <= 30 ? "Medium" : "Projected"}
+                  </td>
                 </tr>
               ))}
             </tbody>

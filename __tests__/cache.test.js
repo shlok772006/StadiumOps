@@ -31,4 +31,14 @@ describe("Cache", () => {
     expect(result.value).toBe("new");
     expect(result.cached).toBe(false);
   });
+
+  test("evicts oldest entries when store exceeds size 100", async () => {
+    for (let i = 1; i <= 100; i++) {
+      await getOrCompute(`key-${i}`, () => Promise.resolve(`val-${i}`), 60000);
+    }
+    await getOrCompute("key-101", () => Promise.resolve("val-101"), 60000);
+    const result = await getOrCompute("key-1", () => Promise.resolve("new-val-1"), 60000);
+    expect(result.value).toBe("new-val-1");
+    expect(result.cached).toBe(false);
+  });
 });

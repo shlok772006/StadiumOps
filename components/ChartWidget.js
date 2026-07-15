@@ -1,3 +1,10 @@
+/**
+ * components/ChartWidget.js
+ * Reusable chart component built on Chart.js and react-chartjs-2.
+ * Supports line, bar, and pie chart types with dark-theme defaults
+ * optimized for the command center UI.
+ */
+import PropTypes from "prop-types";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -84,3 +91,14 @@ export default function ChartWidget({ type = "line", data, options, height = 220
     </div>
   );
 }
+
+ChartWidget.propTypes = {
+  /** Chart type to render */
+  type: PropTypes.oneOf(["line", "bar", "pie"]),
+  /** Chart.js data object with labels and datasets */
+  data: PropTypes.object,
+  /** Chart.js options override */
+  options: PropTypes.object,
+  /** Height of the chart container in pixels */
+  height: PropTypes.number,
+};

@@ -1,3 +1,10 @@
+/**
+ * components/Sidebar.js
+ * Collapsible sidebar navigation for the command center.
+ * Provides quick access to all operational modules with
+ * active page highlighting and keyboard navigation support.
+ */
+import PropTypes from "prop-types";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -18,6 +25,7 @@ export default function Sidebar({ open, onToggle }) {
   return (
     <aside
       className="no-print"
+      aria-label="Sidebar"
       style={{
         width: open ? "var(--sidebar-width)" : "var(--sidebar-collapsed)",
         minWidth: open ? "var(--sidebar-width)" : "var(--sidebar-collapsed)",
@@ -92,13 +100,14 @@ export default function Sidebar({ open, onToggle }) {
       </div>
 
       {/* Nav Items */}
-      <nav style={{ flex: 1, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2, overflowY: "auto" }}>
+      <nav aria-label="Main navigation" style={{ flex: 1, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2, overflowY: "auto" }}>
         {NAV_ITEMS.map((item) => {
           const isActive = router.pathname === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? "page" : undefined}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -153,3 +162,10 @@ export default function Sidebar({ open, onToggle }) {
     </aside>
   );
 }
+
+Sidebar.propTypes = {
+  /** Whether the sidebar is expanded */
+  open: PropTypes.bool.isRequired,
+  /** Callback to toggle sidebar open/closed */
+  onToggle: PropTypes.func.isRequired,
+};

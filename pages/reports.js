@@ -1,3 +1,8 @@
+/**
+ * pages/reports.js
+ * AI report generation page with PDF and text export.
+ * Supports crowd, incident, daily, and match day report types.
+ */
 import { useState } from "react";
 import Head from "next/head";
 import { jsPDF } from "jspdf";
@@ -30,7 +35,7 @@ export default function Reports() {
       const data = await res.json();
       if (res.ok) setReport(data.report);
       else setError(data.error || "Failed to generate report.");
-    } catch { setError("Network error."); }
+    } catch (_e) { setError("Network error."); }
     finally { setLoading(false); }
   };
 
@@ -92,7 +97,10 @@ export default function Reports() {
 
   return (
     <>
-      <Head><title>Reports — StadiumOps Pro</title></Head>
+      <Head>
+        <title>Reports — StadiumOps Pro</title>
+        <meta name="description" content="Generate and export AI-powered operations reports for crowd management, incidents, daily ops, and match day summaries." />
+      </Head>
 
       <div className="fade-up" style={{ marginBottom: 24 }}>
         <p className="card-header accent-cyan">AI REPORT GENERATION</p>

@@ -1,3 +1,8 @@
+/**
+ * pages/settings.js
+ * Configuration page for theme, language, font size, high contrast,
+ * reduced motion, and AI model provider. Includes logout functionality.
+ */
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useApp } from "../components/Layout";
@@ -26,7 +31,10 @@ export default function Settings() {
 
   return (
     <>
-      <Head><title>Settings — StadiumOps Pro</title></Head>
+      <Head>
+        <title>Settings — StadiumOps Pro</title>
+        <meta name="description" content="Configure StadiumOps Pro appearance, AI language, accessibility preferences, and account settings." />
+      </Head>
 
       <div className="fade-up" style={{ marginBottom: 24 }}>
         <p className="card-header accent-blue">CONFIGURATION</p>

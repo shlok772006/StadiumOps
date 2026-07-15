@@ -1,3 +1,9 @@
+/**
+ * components/ChatWindow.js
+ * Scrollable chat conversation display with user and assistant message
+ * bubbles. Includes a typing indicator and formatted AI responses.
+ */
+import PropTypes from "prop-types";
 import FormattedContent from "./FormattedContent";
 
 export default function ChatWindow({ messages = [], loading = false }) {
@@ -23,7 +29,7 @@ export default function ChatWindow({ messages = [], loading = false }) {
       ))}
 
       {loading && (
-        <div className="typing-indicator">
+        <div className="typing-indicator" aria-label="AI is typing">
           <span className="typing-dot" />
           <span className="typing-dot" />
           <span className="typing-dot" />
@@ -32,3 +38,15 @@ export default function ChatWindow({ messages = [], loading = false }) {
     </div>
   );
 }
+
+ChatWindow.propTypes = {
+  /** Array of chat messages with role and content */
+  messages: PropTypes.arrayOf(
+    PropTypes.shape({
+      role: PropTypes.oneOf(["user", "assistant"]).isRequired,
+      content: PropTypes.string.isRequired,
+    })
+  ),
+  /** Whether the AI is currently generating a response */
+  loading: PropTypes.bool,
+};

@@ -1,3 +1,9 @@
+/**
+ * pages/dashboard.js
+ * Main operations command center dashboard displaying real-time KPIs,
+ * live crowd heatmap, AI operational briefing, AI reasoning panels,
+ * gate status detail, and vendor low-stock alerts.
+ */
 import { useMemo, useEffect, useState } from "react";
 import Head from "next/head";
 import StadiumMap from "../components/StadiumMap";
@@ -5,7 +11,7 @@ import AIReasoningPanel from "../components/AIReasoningPanel";
 import FormattedContent from "../components/FormattedContent";
 import { useApp } from "../components/Layout";
 import {
-  GATES, getLiveCrowdDensity, getCurrentAttendance,
+  getLiveCrowdDensity, getCurrentAttendance,
   getWeatherData, VENDOR_DATA, TOURNAMENT_CONTEXT,
 } from "../lib/stadiumData";
 
@@ -28,7 +34,7 @@ export default function Dashboard({ crowd: initialCrowd, weather: initialWeather
     return () => clearInterval(id);
   }, []);
 
-  // Fetch AI briefing
+   // Fetch AI briefing
   useEffect(() => {
     let cancelled = false;
     fetch("/api/insights")
@@ -41,6 +47,23 @@ export default function Dashboard({ crowd: initialCrowd, weather: initialWeather
       .catch(() => !cancelled && setBriefingError("Network error loading briefing."))
       .finally(() => !cancelled && setBriefingLoading(false));
     return () => { cancelled = true; };
+  }, []);
+
+  // Proactive AI notifications for critical gates
+  useEffect(() => {
+    const critGates = crowd.filter((c) => c.status === "critical");
+    const normalGates = crowd.filter((c) => c.status === "normal");
+    critGates.forEach((g) => {
+      const alt = normalGates.length > 0
+        ? `Redirect to Gate ${normalGates[0].gateId} (${normalGates[0].density}% density)`
+        : "All gates elevated — open auxiliary exits";
+      app?.addNotification(
+        `⚠ Gate ${g.gateId} Critical (${g.density}%)`,
+        `Wait time: ${g.waitMinutes}min. AI recommends: ${alt}`,
+        "critical"
+      );
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const stats = useMemo(() => {
@@ -69,6 +92,7 @@ export default function Dashboard({ crowd: initialCrowd, weather: initialWeather
     <>
       <Head>
         <title>Dashboard — StadiumOps Pro</title>
+        <meta name="description" content="Real-time operations command center with live crowd heatmap, AI operational briefing, gate density monitoring, and vendor alerts for stadium management." />
       </Head>
 
       {/* Header */}
@@ -130,7 +154,7 @@ export default function Dashboard({ crowd: initialCrowd, weather: initialWeather
         </div>
 
         {/* AI Briefing */}
-        <div className="card fade-up" style={{ animationDelay: "0.06s" }}>
+        <div className="card fade-up" style={{ animationDelay: "0.06s" }} aria-live="polite" aria-atomic="true">
           <p className="card-header accent-cyan">🧠 AI OPERATIONAL BRIEFING</p>
           {briefingLoading && (
             <div className="stack" style={{ gap: 10 }}>

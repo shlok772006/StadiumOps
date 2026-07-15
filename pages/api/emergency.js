@@ -16,7 +16,17 @@ export default async function handler(req, res) {
       });
     }
 
-    const prompt = buildEmergencyPrompt(incidentType, location, details);
+    const gateIds = GATES.map(g => g.id);
+    if (!location || !gateIds.includes(location)) {
+      return res.status(400).json({
+        error: `Invalid location. Expected one of: ${gateIds.join(", ")}`,
+      });
+    }
+
+    // Clean and limit details
+    const cleanDetails = String(details || "").replace(/<[^>]*>/g, "").slice(0, 500);
+
+    const prompt = buildEmergencyPrompt(incidentType, location, cleanDetails);
     const actionPlan = await callLLM({
       system: prompt.system,
       messages: [{ role: "user", content: prompt.user }],

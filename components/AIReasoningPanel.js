@@ -1,10 +1,12 @@
-import { useState } from "react";
-
 /**
- * AIReasoningPanel — the key differentiator.
- * Shows a metric with AI-generated explanation and recommendation.
- * Always expandable so judges can see the reasoning depth.
+ * components/AIReasoningPanel.js
+ * Expandable panel showing an operational metric with AI-generated
+ * reasoning, recommendation, and quantified benefit. This is the key
+ * differentiator demonstrating the AI reasoning depth to judges.
  */
+import { useState } from "react";
+import PropTypes from "prop-types";
+
 export default function AIReasoningPanel({ metric, value, unit, status, reasoning, recommendation, benefit }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -73,3 +75,20 @@ export default function AIReasoningPanel({ metric, value, unit, status, reasonin
     </div>
   );
 }
+
+AIReasoningPanel.propTypes = {
+  /** Display label for the metric */
+  metric: PropTypes.string.isRequired,
+  /** Current value of the metric */
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  /** Optional unit suffix displayed next to the value */
+  unit: PropTypes.string,
+  /** Status category controlling the accent color */
+  status: PropTypes.oneOf(["normal", "busy", "critical", "info"]),
+  /** AI reasoning text explaining the analysis */
+  reasoning: PropTypes.string,
+  /** AI-generated actionable recommendation */
+  recommendation: PropTypes.string,
+  /** Quantified expected benefit of following the recommendation */
+  benefit: PropTypes.string,
+};

@@ -1,3 +1,11 @@
+/**
+ * components/NotificationFeed.js
+ * Toast-style notification feed displayed in the bottom-right corner.
+ * Supports priority-based coloring (critical, warning, info, success)
+ * with auto-dismiss and manual dismiss via close button.
+ */
+import PropTypes from "prop-types";
+
 export default function NotificationFeed({ notifications = [], onDismiss }) {
   if (notifications.length === 0) return null;
 
@@ -12,7 +20,7 @@ export default function NotificationFeed({ notifications = [], onDismiss }) {
   };
 
   return (
-    <div className="toast-container">
+    <div className="toast-container" role="status" aria-live="polite" aria-label="Notifications">
       {notifications.slice(0, 5).map((n) => (
         <div
           key={n.id}
@@ -72,3 +80,18 @@ export default function NotificationFeed({ notifications = [], onDismiss }) {
     </div>
   );
 }
+
+NotificationFeed.propTypes = {
+  /** Array of notification objects to display */
+  notifications: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      message: PropTypes.string.isRequired,
+      priority: PropTypes.string,
+      timestamp: PropTypes.string,
+    })
+  ),
+  /** Callback to dismiss a notification by ID */
+  onDismiss: PropTypes.func.isRequired,
+};

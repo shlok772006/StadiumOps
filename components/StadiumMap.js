@@ -1,4 +1,11 @@
+/**
+ * components/StadiumMap.js
+ * Interactive SVG stadium map with live crowd density visualization.
+ * Each gate renders with pulsing rings proportional to density, color-coded
+ * by status (green/amber/red). Includes amenity pins and zone labels.
+ */
 import { useId, useMemo, memo } from "react";
+import PropTypes from "prop-types";
 import { GATES, AMENITIES } from "../lib/stadiumData";
 
 const STATUS_COLOR = { normal: "#10b981", busy: "#f59e0b", critical: "#ef4444" };
@@ -140,5 +147,23 @@ function StadiumMap({ crowd = [], highlightGate, showLegend = true, compact = fa
     </div>
   );
 }
+
+StadiumMap.propTypes = {
+  /** Array of live crowd density data per gate */
+  crowd: PropTypes.arrayOf(
+    PropTypes.shape({
+      gateId: PropTypes.string.isRequired,
+      density: PropTypes.number.isRequired,
+      status: PropTypes.oneOf(["normal", "busy", "critical"]).isRequired,
+      waitMinutes: PropTypes.number.isRequired,
+    })
+  ),
+  /** Gate ID to visually highlight (e.g. during emergency) */
+  highlightGate: PropTypes.string,
+  /** Whether to show the status color legend below the map */
+  showLegend: PropTypes.bool,
+  /** Whether to render in compact mode (smaller viewBox, no amenities) */
+  compact: PropTypes.bool,
+};
 
 export default memo(StadiumMap);

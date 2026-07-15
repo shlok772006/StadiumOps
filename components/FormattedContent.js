@@ -1,4 +1,11 @@
+/**
+ * components/FormattedContent.js
+ * Renders raw AI text into structured HTML with markdown-like formatting.
+ * Supports headers (h1-h4), bullet points, bold text (**text**), and
+ * standard paragraphs. Used throughout the app to display AI responses.
+ */
 import { Fragment } from "react";
+import PropTypes from "prop-types";
 
 export default function FormattedContent({ text = "" }) {
   if (!text) return null;
@@ -111,6 +118,16 @@ export default function FormattedContent({ text = "" }) {
   );
 }
 
+FormattedContent.propTypes = {
+  /** Raw text content (may include markdown-like formatting) to render */
+  text: PropTypes.string,
+};
+
+/**
+ * Parse markdown bold syntax (**text**) within a string into React elements.
+ * @param {string} text - text potentially containing **bold** markers
+ * @returns {Array<React.ReactElement>} array of React elements with bold spans
+ */
 function parseBold(text) {
   // Regex to match markdown bold syntax (**text**)
   const regex = /(\*\*.*?\*\*)/g;

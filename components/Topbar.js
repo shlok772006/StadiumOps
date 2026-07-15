@@ -1,5 +1,9 @@
+/**
+ * components/Topbar.js
+ * Top header bar with live match info, smart entity search,
+ * theme toggle, notification badge, and user profile display.
+ */
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useApp } from "./Layout";
 import { TOURNAMENT_CONTEXT } from "../lib/stadiumData";
@@ -106,6 +110,8 @@ export default function Topbar() {
       {/* Smart Search Bar */}
       <div
         ref={containerRef}
+        role="search"
+        aria-label="Search stadium entities"
         style={{
           position: "relative",
           maxWidth: 360,
@@ -142,6 +148,8 @@ export default function Topbar() {
         {showResults && results.length > 0 && (
           <div
             className="card fade-in"
+            role="listbox"
+            aria-label="Search results"
             style={{
               position: "absolute",
               top: "calc(100% + 8px)",
@@ -157,6 +165,8 @@ export default function Topbar() {
             {results.map((res) => (
               <button
                 key={res.id}
+                role="option"
+                aria-selected={false}
                 onClick={() => handleResultClick(res)}
                 style={{
                   width: "100%",

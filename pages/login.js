@@ -1,3 +1,9 @@
+/**
+ * pages/login.js
+ * Simulated authentication page with role selection.
+ * No real credentials required — stores operator name and role
+ * in localStorage for the command center session.
+ */
 import { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -36,6 +42,7 @@ export default function Login() {
     <>
       <Head>
         <title>Login — StadiumOps Pro</title>
+        <meta name="description" content="Enter the StadiumOps Pro command center. Select your role and begin monitoring stadium operations for FIFA World Cup 2026." />
       </Head>
 
       <div
@@ -81,7 +88,7 @@ export default function Login() {
             {/* Role Selection */}
             <div style={{ marginBottom: 20 }}>
               <span className="field-label" style={{ display: "block", marginBottom: 10 }}>Select Role</span>
-              <div className="stack" style={{ gap: 8 }}>
+              <div role="radiogroup" aria-label="Select your role" className="stack" style={{ gap: 8 }}>
                 {ROLES.map((r) => (
                   <label
                     key={r.id}
@@ -102,7 +109,7 @@ export default function Login() {
                       value={r.id}
                       checked={role === r.id}
                       onChange={() => setRole(r.id)}
-                      style={{ display: "none" }}
+                      style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}
                     />
                     <span style={{ fontSize: "1.4rem" }}>{r.icon}</span>
                     <div>

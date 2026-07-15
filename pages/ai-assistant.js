@@ -1,3 +1,9 @@
+/**
+ * pages/ai-assistant.js
+ * Interactive AI chat assistant page grounded in live stadium data.
+ * Supports voice input (Web Speech API), read-aloud feedback, and
+ * multilingual responses. Displays the live gate map alongside chat.
+ */
 import { useState, useCallback, useRef, useEffect } from "react";
 import Head from "next/head";
 import ChatWindow from "../components/ChatWindow";
@@ -55,7 +61,7 @@ export default function AIAssistant({ crowd }) {
 
         setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
         if (voiceReplies) speak(data.reply);
-      } catch {
+      } catch (_e) {
         setError("Network error — please check your connection and try again.");
       } finally {
         setLoading(false);
@@ -66,7 +72,10 @@ export default function AIAssistant({ crowd }) {
 
   return (
     <>
-      <Head><title>AI Assistant — StadiumOps Pro</title></Head>
+      <Head>
+        <title>AI Assistant — StadiumOps Pro</title>
+        <meta name="description" content="Interactive AI assistant for stadium operations. Ask about crowd status, gate recommendations, emergencies, and staffing — powered by real-time data." />
+      </Head>
 
       <div className="row fade-up" style={{ justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
         <div>
@@ -104,6 +113,7 @@ export default function AIAssistant({ crowd }) {
           {error && (
             <p
               role="alert"
+              aria-live="assertive"
               style={{
                 color: "var(--accent-red)",
                 fontSize: "0.82rem",
