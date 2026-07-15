@@ -4,6 +4,7 @@
  * AI-generated action plans, nearest resource finder, and active incident tracker.
  */
 import { useState } from "react";
+import PropTypes from "prop-types";
 import Head from "next/head";
 import { GATES, EMERGENCY_PROTOCOLS, AMENITIES, getLiveCrowdDensity } from "../lib/stadiumData";
 import { formatApiError } from "../lib/formatApiError";
@@ -213,6 +214,10 @@ export default function Emergency({ crowd }) {
     </>
   );
 }
+
+Emergency.propTypes = {
+  crowd: PropTypes.array.isRequired,
+};
 
 export async function getServerSideProps() {
   return { props: { crowd: getLiveCrowdDensity() } };

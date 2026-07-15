@@ -10,7 +10,8 @@ function handler(req, res) {
     return res.status(200).json({ results: [] });
   }
 
-  const query = q.trim().toLowerCase();
+  // Sanitize the query parameters to prevent XSS / Injection
+  const query = q.trim().toLowerCase().replace(/[^a-z0-9\s\-\_]/g, "").slice(0, 100);
   const results = [];
 
   // Search Gates

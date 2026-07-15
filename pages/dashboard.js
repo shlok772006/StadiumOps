@@ -5,6 +5,7 @@
  * gate status detail, and vendor low-stock alerts.
  */
 import { useMemo, useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import Head from "next/head";
 import StadiumMap from "../components/StadiumMap";
 import AIReasoningPanel from "../components/AIReasoningPanel";
@@ -253,6 +254,12 @@ export default function Dashboard({ crowd: initialCrowd, weather: initialWeather
     </>
   );
 }
+
+Dashboard.propTypes = {
+  crowd: PropTypes.array.isRequired,
+  weather: PropTypes.object.isRequired,
+  attendance: PropTypes.number.isRequired,
+};
 
 export async function getServerSideProps() {
   return {

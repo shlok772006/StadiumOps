@@ -1,6 +1,6 @@
-import { routeQuery } from "../../lib/orchestrator";
+const { routeQuery } = require("../../lib/orchestrator");
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed. Use POST." });
   }
@@ -41,3 +41,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
+module.exports = handler;

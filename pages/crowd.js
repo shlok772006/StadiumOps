@@ -4,6 +4,7 @@
  * predictive line charts, and AI-powered crowd analysis.
  */
 import { useState, useEffect, useMemo } from "react";
+import PropTypes from "prop-types";
 import Head from "next/head";
 import StadiumMap from "../components/StadiumMap";
 import AIReasoningPanel from "../components/AIReasoningPanel";
@@ -199,6 +200,11 @@ export default function CrowdAnalytics({ crowd: initialCrowd, predictions: initi
     </>
   );
 }
+
+CrowdAnalytics.propTypes = {
+  crowd: PropTypes.array.isRequired,
+  predictions: PropTypes.array.isRequired,
+};
 
 export async function getServerSideProps() {
   return {

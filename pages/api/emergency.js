@@ -1,8 +1,8 @@
-import { callLLM } from "../../lib/llm";
-import { buildEmergencyPrompt } from "../../lib/orchestrator";
-import { EMERGENCY_PROTOCOLS, GATES } from "../../lib/stadiumData";
+const { callLLM } = require("../../lib/llm");
+const { buildEmergencyPrompt } = require("../../lib/orchestrator");
+const { EMERGENCY_PROTOCOLS, GATES } = require("../../lib/stadiumData");
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed. Use POST." });
   }
@@ -48,3 +48,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
+module.exports = handler;

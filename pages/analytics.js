@@ -4,6 +4,7 @@
  * density, vendor performance, transit load factors, and weather data.
  */
 import { useMemo } from "react";
+import PropTypes from "prop-types";
 import Head from "next/head";
 import ChartWidget from "../components/ChartWidget";
 import { getLiveCrowdDensity, getWeatherData, VENDOR_DATA, TRANSPORT_OPTIONS } from "../lib/stadiumData";
@@ -202,6 +203,11 @@ export default function Analytics({ crowd, weather }) {
     </>
   );
 }
+
+Analytics.propTypes = {
+  crowd: PropTypes.array.isRequired,
+  weather: PropTypes.object.isRequired,
+};
 
 export async function getServerSideProps() {
   return { props: { crowd: getLiveCrowdDensity(), weather: getWeatherData() } };

@@ -1,8 +1,8 @@
-import { callLLM } from "../../lib/llm";
-import { buildCrowdAnalysisPrompt } from "../../lib/orchestrator";
-import { getOrCompute } from "../../lib/cache";
+const { callLLM } = require("../../lib/llm");
+const { buildCrowdAnalysisPrompt } = require("../../lib/orchestrator");
+const { getOrCompute } = require("../../lib/cache");
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed. Use GET." });
   }
@@ -32,3 +32,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
+module.exports = handler;

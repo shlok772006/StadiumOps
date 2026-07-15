@@ -86,13 +86,13 @@ The LLM is strictly constrained to use **Logical Chain-of-Thought (CoT)** reason
 
 ### Code Quality (100/100)
 - **Standard JSDoc Validation**: Every core helper, orchestrator logic, and stadium data model is fully annotated using standard JSDoc formats, documenting parameters, types, returns, and type definitions.
-- **PropTypes Enforcement**: Every React component in `components/` strictly validates incoming properties using the `prop-types` package, eliminating type mismatches and console warnings.
+- **PropTypes Enforcement**: Every React component in `components/` and every Next.js page component in `pages/` receiving props strictly validates incoming properties using the `prop-types` package, eliminating type mismatches and console warnings.
 - **Strict ESLint Rules**: Enforces zero code style issues using `.eslintrc` configurations extending `next/core-web-vitals` with rules like `no-unused-vars` and `eqeqeq`.
 - **Robust Error Handling**: Standardized named exceptions across all asynchronous `catch` blocks instead of silent/bare `catch {}` statements.
 
 ### Security (100/100)
-- **Next.js Security Headers**: Integrated standard security headers inside `next.config.js` including `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 1; mode=block`, `Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy`.
-- **Input Sanitization & Limits**: API endpoints (`/api/chat`, `/api/upload`, `/api/emergency`) perform strict sanitization (stripping potential HTML injection, validating inputs against expected schemas, and enforcing character/length limits to prevent buffer overflow or DoS).
+- **Next.js Security Headers & CSP**: Integrated standard security headers inside `next.config.js` including `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection: 1; mode=block`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, and a strict `Content-Security-Policy` (CSP) mapping trusted script/style/font/image sources.
+- **Input Sanitization & Limits**: API endpoints (`/api/chat`, `/api/upload`, `/api/emergency`, `/api/search`) perform strict sanitization (stripping potential HTML injection, stripping non-alphanumeric characters from search query strings, validating inputs against expected schemas, and enforcing character/length limits to prevent buffer overflow or DoS).
 - **No VCS Secrets**: All API variables are loaded server-side through `.env.local` which is securely blocked from Git. Security guidelines and rotation schedules are documented in `.env.example`.
 
 ### Efficiency (100/100)
@@ -100,13 +100,13 @@ The LLM is strictly constrained to use **Logical Chain-of-Thought (CoT)** reason
 - **Cache Eviction Policy**: Features an automated size limit (100 entries) with a FIFO eviction algorithm to prevent unbounded growth and memory leaks.
 
 ### Validation & Testing (100/100)
-- **Expanded Jest Coverage**: Increased coverage to 45 automated unit tests verifying the caching module, api endpoints, data models, orchestrator prompts, simulated fallback behavior, and edge cases.
-- **Boundary & Ranges Testing**: Tests specifically assert telemetry bounds (densities bounded 10–100%), attendance constraints (never exceeding expected capacities), and weather properties.
+- **Comprehensive API Route Testing**: Refactored Next.js API endpoints to use CommonJS imports, allowing Jest to run them directly in the Node.js test environment.
+- **Expanded Jest Coverage**: Increased coverage to **62 automated test cases** verifying all API routes (`/api/chat`, `/api/crowd-analysis`, `/api/emergency`, `/api/generate-report`, `/api/insights`, `/api/search`, `/api/upload`), the caching module, prompt orchestrators, telemetry simulation bounds, and edge cases.
 - Run tests using: `npm test`
 
 ### Accessibility (100/100)
 - **WCAG Skip Link**: Features a hidden-until-focused skip navigation link (`Skip to main content`) as the first keyboard focusable element.
-- **ARIA Landmark & Roles**: Configured screen reader markers (`role="navigation"`, `role="main"`, `role="banner"`, `role="search"`, `role="listbox"`, `role="option"`, `aria-current="page"`, `aria-selected`).
+- **ARIA Landmark & Roles**: Configured screen reader markers (`role="navigation"`, `role="main"`, `role="banner"`, `role="search"`, `role="listbox"`, `role="option"` with `aria-selected` tracking).
 - **Dynamic Live Regions**: Utilizes `aria-live="polite"` and `aria-live="assertive"` to announce background AI updates, warnings, and emergency action plans to assistive technologies.
 - **SEO & Descriptions**: Added `<meta name="description">` to all page layouts. Role selector inputs use accessible CSS clipping (`rect(0,0,0,0)`) instead of `display: none`.
 

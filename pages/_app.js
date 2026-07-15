@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import "../styles/globals.css";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
@@ -19,3 +20,8 @@ export default function App({ Component, pageProps }) {
     </Layout>
   );
 }
+
+App.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.object.isRequired,
+};

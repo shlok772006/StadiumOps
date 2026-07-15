@@ -5,6 +5,7 @@
  * multilingual responses. Displays the live gate map alongside chat.
  */
 import { useState, useCallback, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import Head from "next/head";
 import ChatWindow from "../components/ChatWindow";
 import LanguageSelector from "../components/LanguageSelector";
@@ -177,6 +178,10 @@ export default function AIAssistant({ crowd }) {
     </>
   );
 }
+
+AIAssistant.propTypes = {
+  crowd: PropTypes.array.isRequired,
+};
 
 export async function getServerSideProps() {
   return { props: { crowd: getLiveCrowdDensity() } };

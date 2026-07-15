@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import PropTypes from "prop-types";
 import Head from "next/head";
 import Link from "next/link";
 import StadiumMap from "../components/StadiumMap";
@@ -173,6 +174,16 @@ function Stat({ label, value, accent }) {
     </div>
   );
 }
+
+Home.propTypes = {
+  crowd: PropTypes.array.isRequired,
+};
+
+Stat.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  accent: PropTypes.bool,
+};
 
 export async function getServerSideProps() {
   return { props: { crowd: getLiveCrowdDensity() } };
