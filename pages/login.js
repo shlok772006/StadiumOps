@@ -19,10 +19,11 @@ export default function Login() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("staff");
   const [loading, setLoading] = useState(false);
+  const [focusedRole, setFocusedRole] = useState(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim()) { return; }
     setLoading(true);
 
     const user = {
@@ -97,7 +98,8 @@ export default function Login() {
                       gap: 12,
                       padding: "12px 16px",
                       borderRadius: "var(--radius-md)",
-                      border: `1px solid ${role === r.id ? "var(--accent-blue)" : "var(--border-default)"}`,
+                      border: `1px solid ${role === r.id ? "var(--accent-blue)" : focusedRole === r.id ? "var(--accent-blue-bright)" : "var(--border-default)"}`,
+                      boxShadow: focusedRole === r.id ? "0 0 0 2px var(--accent-blue-soft)" : "none",
                       background: role === r.id ? "var(--accent-blue-soft)" : "var(--bg-tertiary)",
                       cursor: "pointer",
                       transition: "all var(--transition-fast)",
@@ -108,7 +110,9 @@ export default function Login() {
                       name="role"
                       value={r.id}
                       checked={role === r.id}
-                      onChange={() => setRole(r.id)}
+                      onChange={() => { setRole(r.id); }}
+                      onFocus={() => { setFocusedRole(r.id); }}
+                      onBlur={() => { setFocusedRole(null); }}
                       style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}
                     />
                     <span style={{ fontSize: "1.4rem" }}>{r.icon}</span>

@@ -13,6 +13,7 @@ import VoiceInput, { speak } from "../components/VoiceInput";
 import StadiumMap from "../components/StadiumMap";
 import { formatApiError } from "../lib/formatApiError";
 import { getLiveCrowdDensity } from "../lib/stadiumData";
+import { CrowdDensityShape } from "../lib/propTypeShapes";
 
 const SUGGESTIONS = [
   "Which gate is least congested right now?",
@@ -23,14 +24,23 @@ const SUGGESTIONS = [
   "Analyze Gate A congestion pattern",
 ];
 
-export default function AIAssistant({ crowd }) {
+export default function AIAssistant({ crowd: initialCrowd }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [language, setLanguage] = useState("English");
   const [loading, setLoading] = useState(false);
   const [voiceReplies, setVoiceReplies] = useState(false);
   const [error, setError] = useState("");
+  const [crowd, setCrowd] = useState(initialCrowd);
   const chatEndRef = useRef(null);
+
+  // Auto-refresh crowd data every 60 seconds for live gate map
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCrowd(getLiveCrowdDensity());
+    }, 60000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -39,7 +49,7 @@ export default function AIAssistant({ crowd }) {
   const sendMessage = useCallback(
     async (text) => {
       const content = text.trim();
-      if (!content || loading) return;
+      if (!content || loading) { return; }
 
       setError("");
       const nextMessages = [...messages, { role: "user", content }];
@@ -61,7 +71,7 @@ export default function AIAssistant({ crowd }) {
         }
 
         setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
-        if (voiceReplies) speak(data.reply);
+        if (voiceReplies) { speak(data.reply); }
       } catch (_e) {
         setError("Network error — please check your connection and try again.");
       } finally {
@@ -180,7 +190,7 @@ export default function AIAssistant({ crowd }) {
 }
 
 AIAssistant.propTypes = {
-  crowd: PropTypes.array.isRequired,
+  crowd: PropTypes.arrayOf(CrowdDensityShape).isRequired,
 };
 
 export async function getServerSideProps() {

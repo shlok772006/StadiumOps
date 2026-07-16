@@ -56,7 +56,7 @@ function StadiumMap({ crowd = [], highlightGate, showLegend = true, compact = fa
         {!compact &&
           AMENITIES.map((amenity, idx) => {
             const gate = GATES.find((g) => g.id === amenity.near);
-            if (!gate) return null;
+            if (!gate) { return null; }
 
             // Stagger amenities around the gate using different angles
             const angle = (idx * 2 * Math.PI) / 5;

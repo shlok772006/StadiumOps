@@ -13,7 +13,7 @@ export default function VoiceInput({ onResult, disabled }) {
   const supported = typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
 
   const toggle = useCallback(() => {
-    if (!supported) return;
+    if (!supported) { return; }
 
     if (listening && recRef.current) {
       recRef.current.stop();
@@ -30,7 +30,7 @@ export default function VoiceInput({ onResult, disabled }) {
     rec.onresult = (event) => {
       const text = event.results[0][0].transcript;
       setListening(false);
-      if (onResult) onResult(text);
+      if (onResult) { onResult(text); }
     };
 
     rec.onerror = () => setListening(false);
@@ -41,7 +41,7 @@ export default function VoiceInput({ onResult, disabled }) {
     setListening(true);
   }, [listening, onResult, supported]);
 
-  if (!supported) return null;
+  if (!supported) { return null; }
 
   return (
     <button
@@ -75,7 +75,7 @@ VoiceInput.propTypes = {
  * @param {string} text - the text to speak aloud
  */
 export function speak(text) {
-  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  if (typeof window === "undefined" || !window.speechSynthesis) { return; }
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.rate = 0.95;

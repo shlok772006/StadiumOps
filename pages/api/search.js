@@ -1,5 +1,21 @@
-const { GATES, SECTIONS, AMENITIES, TRANSPORT_OPTIONS } = require("../../lib/stadiumData");
+/**
+ * pages/api/search.js
+ * -----------------------------------------------------------------------
+ * Smart entity search endpoint. Searches across gates, seating sections,
+ * amenities, and transport options using a sanitized query string.
+ * Returns matched results with category, title, details, and navigation URL.
+ * -----------------------------------------------------------------------
+ */
 
+const { GATES, SECTIONS, AMENITIES, TRANSPORT_OPTIONS } = require("../../lib/stadiumData");
+const { API_LIMITS } = require("../../lib/constants");
+
+/**
+ * Handle GET requests for smart stadium entity search.
+ * @param {import('next').NextApiRequest} req - Next.js API request
+ * @param {import('next').NextApiResponse} res - Next.js API response
+ * @returns {void}
+ */
 function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed. Use GET." });
@@ -11,7 +27,7 @@ function handler(req, res) {
   }
 
   // Sanitize the query parameters to prevent XSS / Injection
-  const query = q.trim().toLowerCase().replace(/[^a-z0-9\s\-\_]/g, "").slice(0, 100);
+  const query = q.trim().toLowerCase().replace(/[^a-z0-9\s\-\_]/g, "").slice(0, API_LIMITS.MAX_SEARCH_QUERY_LENGTH);
   const results = [];
 
   // Search Gates
@@ -66,7 +82,7 @@ function handler(req, res) {
     }
   });
 
-  return res.status(200).json({ results: results.slice(0, 10) });
+  return res.status(200).json({ results: results.slice(0, API_LIMITS.MAX_SEARCH_RESULTS) });
 }
 
 module.exports = handler;

@@ -8,7 +8,7 @@ import { Fragment } from "react";
 import PropTypes from "prop-types";
 
 export default function FormattedContent({ text = "" }) {
-  if (!text) return null;
+  if (!text) { return null; }
 
   // Split content into lines
   const lines = text.split("\n");
@@ -16,8 +16,8 @@ export default function FormattedContent({ text = "" }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
       {lines.map((line, lineIdx) => {
-        let content = line.trim();
-        if (!content) return <div key={lineIdx} style={{ height: "4px" }} />;
+        const content = line.trim();
+        if (!content) { return <div key={lineIdx} style={{ height: "4px" }} />; }
 
         // Check if header
         if (content.startsWith("### ")) {

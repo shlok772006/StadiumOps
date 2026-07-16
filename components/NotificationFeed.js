@@ -7,7 +7,7 @@
 import PropTypes from "prop-types";
 
 export default function NotificationFeed({ notifications = [], onDismiss }) {
-  if (notifications.length === 0) return null;
+  if (notifications.length === 0) { return null; }
 
   const priorityBorder = {
     critical: "var(--accent-red)",

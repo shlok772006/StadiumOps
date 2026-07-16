@@ -4,6 +4,9 @@
     "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "eqeqeq": "error",
-    "curly": "off"
+    "curly": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-throw-literal": "error"
   }
 }

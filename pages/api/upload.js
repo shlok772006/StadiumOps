@@ -1,5 +1,22 @@
-const { callLLM } = require("../../lib/llm");
+/**
+ * pages/api/upload.js
+ * -----------------------------------------------------------------------
+ * Data upload analysis endpoint. Receives parsed file data (headers and
+ * sample rows) and uses the AI to analyze the dataset, identify patterns,
+ * assess stadium operations relevance, and provide recommendations.
+ * -----------------------------------------------------------------------
+ */
 
+const { callLLM } = require("../../lib/llm");
+const { API_LIMITS } = require("../../lib/constants");
+const { logError } = require("../../lib/logger");
+
+/**
+ * Handle POST requests for uploaded data analysis.
+ * @param {import('next').NextApiRequest} req - Next.js API request
+ * @param {import('next').NextApiResponse} res - Next.js API response
+ * @returns {Promise<void>}
+ */
 async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed. Use POST." });
@@ -17,25 +34,25 @@ async function handler(req, res) {
     }
 
     // Input limitations and validation
-    if (headers.length > 100) {
-      return res.status(400).json({ error: "Too many columns. Maximum allowed is 100." });
+    if (headers.length > API_LIMITS.MAX_UPLOAD_COLUMNS) {
+      return res.status(400).json({ error: `Too many columns. Maximum allowed is ${API_LIMITS.MAX_UPLOAD_COLUMNS}.` });
     }
-    if (sampleRows.length > 50) {
-      return res.status(400).json({ error: "Too many sample rows. Maximum allowed is 50." });
+    if (sampleRows.length > API_LIMITS.MAX_UPLOAD_SAMPLE_ROWS) {
+      return res.status(400).json({ error: `Too many sample rows. Maximum allowed is ${API_LIMITS.MAX_UPLOAD_SAMPLE_ROWS}.` });
     }
     if (typeof totalRows !== "number" || totalRows < 0) {
       return res.status(400).json({ error: "totalRows must be a non-negative number." });
     }
 
     // Clean inputs
-    const cleanFileName = String(fileName || "uploaded_data").replace(/[^a-zA-Z0-9_\-\.]/g, "").slice(0, 100);
-    const cleanHeaders = headers.map(h => String(h).replace(/<[^>]*>/g, "").slice(0, 50));
+    const cleanFileName = String(fileName || "uploaded_data").replace(/[^a-zA-Z0-9_\-\.]/g, "").slice(0, API_LIMITS.MAX_FILENAME_LENGTH);
+    const cleanHeaders = headers.map(h => String(h).replace(/<[^>]*>/g, "").slice(0, API_LIMITS.MAX_HEADER_LENGTH));
     const cleanSampleRows = sampleRows.map(row => {
-      if (typeof row !== "object" || row === null) return {};
+      if (typeof row !== "object" || row === null) { return {}; }
       const newRow = {};
       Object.keys(row).forEach(k => {
-        const cleanKey = String(k).replace(/<[^>]*>/g, "").slice(0, 50);
-        newRow[cleanKey] = String(row[k]).replace(/<[^>]*>/g, "").slice(0, 200);
+        const cleanKey = String(k).replace(/<[^>]*>/g, "").slice(0, API_LIMITS.MAX_HEADER_LENGTH);
+        newRow[cleanKey] = String(row[k]).replace(/<[^>]*>/g, "").slice(0, API_LIMITS.MAX_CELL_VALUE_LENGTH);
       });
       return newRow;
     });
@@ -67,7 +84,7 @@ Analyze this data now.`;
 
     return res.status(200).json({ analysis });
   } catch (err) {
-    console.error("[/api/upload] error:", err.message);
+    logError("/api/upload", "Failed to analyze uploaded data", err);
     return res.status(500).json({
       error: "Could not analyze uploaded data.",
       detail: err.message,

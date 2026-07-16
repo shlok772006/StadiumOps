@@ -48,8 +48,8 @@ export default function Upload() {
       } else {
         setError(`Unsupported file type: .${ext}. Please upload CSV or JSON.`);
       }
-    } catch (e) {
-      setError(`Failed to parse file: ${e.message}`);
+    } catch (err) {
+      setError(`Failed to parse file: ${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
@@ -57,11 +57,11 @@ export default function Upload() {
     e.preventDefault();
     setDragOver(false);
     const f = e.dataTransfer.files[0];
-    if (f) processFile(f);
+    if (f) { processFile(f); }
   };
 
   const analyzeData = async () => {
-    if (!data) return;
+    if (!data) { return; }
     setAnalysisLoading(true);
     setError("");
 
@@ -72,8 +72,8 @@ export default function Upload() {
         body: JSON.stringify({ fileName: file?.name, headers, sampleRows: data.slice(0, 20), totalRows: data.length }),
       });
       const result = await res.json();
-      if (res.ok) setAnalysis(result.analysis);
-      else setError(result.error || "Analysis failed.");
+      if (res.ok) { setAnalysis(result.analysis); }
+      else { setError(result.error || "Analysis failed."); }
     } catch (_e) { setError("Network error during analysis."); }
     finally { setAnalysisLoading(false); }
   };
@@ -99,7 +99,13 @@ export default function Upload() {
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
-        onClick={() => fileRef.current?.click()}
+        onClick={() => { fileRef.current?.click(); }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            fileRef.current?.click();
+          }
+        }}
         role="button"
         tabIndex={0}
         aria-label="Upload a file"

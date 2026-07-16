@@ -15,6 +15,7 @@ import {
   getLiveCrowdDensity, getCurrentAttendance,
   getWeatherData, VENDOR_DATA, TOURNAMENT_CONTEXT,
 } from "../lib/stadiumData";
+import { CrowdDensityShape, WeatherShape } from "../lib/propTypeShapes";
 
 export default function Dashboard({ crowd: initialCrowd, weather: initialWeather, attendance: initialAttendance }) {
   const app = useApp();
@@ -38,19 +39,19 @@ export default function Dashboard({ crowd: initialCrowd, weather: initialWeather
    // Fetch AI briefing
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/insights")
+    fetch(`/api/insights?lang=${encodeURIComponent(app?.language || "English")}`)
       .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
       .then(({ ok, d }) => {
-        if (cancelled) return;
-        if (ok) setBriefing(d.briefing);
-        else setBriefingError(d.error || "Could not load briefing.");
+        if (cancelled) { return; }
+        if (ok) { setBriefing(d.briefing); }
+        else { setBriefingError(d.error || "Could not load briefing."); }
       })
       .catch(() => !cancelled && setBriefingError("Network error loading briefing."))
       .finally(() => !cancelled && setBriefingLoading(false));
     return () => { cancelled = true; };
-  }, []);
+  }, [app?.language]);
 
-  // Proactive AI notifications for critical gates
+  // Proactive AI notifications for critical gates — re-evaluates on crowd data change
   useEffect(() => {
     const critGates = crowd.filter((c) => c.status === "critical");
     const normalGates = crowd.filter((c) => c.status === "normal");
@@ -64,8 +65,7 @@ export default function Dashboard({ crowd: initialCrowd, weather: initialWeather
         "critical"
       );
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [crowd]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const stats = useMemo(() => {
     const critical = crowd.filter((c) => c.status === "critical");
@@ -256,8 +256,8 @@ export default function Dashboard({ crowd: initialCrowd, weather: initialWeather
 }
 
 Dashboard.propTypes = {
-  crowd: PropTypes.array.isRequired,
-  weather: PropTypes.object.isRequired,
+  crowd: PropTypes.arrayOf(CrowdDensityShape).isRequired,
+  weather: WeatherShape.isRequired,
   attendance: PropTypes.number.isRequired,
 };
 

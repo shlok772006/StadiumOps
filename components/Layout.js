@@ -8,6 +8,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import MatchDayBanner from "./MatchDayBanner";
 import NotificationFeed from "./NotificationFeed";
 
 const AppContext = createContext(null);
@@ -72,6 +73,7 @@ export default function Layout({ children }) {
       <div style={{ display: "flex", height: "100vh", overflow: "hidden", position: "relative", zIndex: 1 }}>
         <Sidebar open={sidebarOpen} onToggle={() => setSidebarOpen((v) => !v)} />
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          <MatchDayBanner />
           <Topbar />
           <main id="main-content" role="main" style={{ flex: 1, overflowY: "auto", padding: "24px" }}>
             {children}

@@ -11,6 +11,8 @@ import AIReasoningPanel from "../components/AIReasoningPanel";
 import ChartWidget from "../components/ChartWidget";
 import { getLiveCrowdDensity, getQueuePredictions, GATES } from "../lib/stadiumData";
 import FormattedContent from "../components/FormattedContent";
+import { CrowdDensityShape, PredictionShape } from "../lib/propTypeShapes";
+import { useApp } from "../components/Layout";
 
 const GATE_COLORS = {
   A: "#3b82f6",
@@ -24,6 +26,7 @@ const GATE_COLORS = {
 };
 
 export default function CrowdAnalytics({ crowd: initialCrowd, predictions: initialPredictions }) {
+  const app = useApp();
   const [crowd, setCrowd] = useState(initialCrowd);
   const [predictions] = useState(initialPredictions);
   const [analysis, setAnalysis] = useState("");
@@ -39,12 +42,18 @@ export default function CrowdAnalytics({ crowd: initialCrowd, predictions: initi
     setAnalysisLoading(true);
     setAnalysisError("");
     try {
-      const res = await fetch("/api/crowd-analysis");
+      const res = await fetch(`/api/crowd-analysis?lang=${encodeURIComponent(app?.language || "English")}`);
       const data = await res.json();
-      if (res.ok) setAnalysis(data.analysis);
-      else setAnalysisError(data.error || "Failed to load analysis.");
-    } catch (_e) { setAnalysisError("Network error."); }
-    finally { setAnalysisLoading(false); }
+      if (res.ok) {
+        setAnalysis(data.analysis);
+      } else {
+        setAnalysisError(data.error || "Failed to load analysis.");
+      }
+    } catch (_err) {
+      setAnalysisError("Network error.");
+    } finally {
+      setAnalysisLoading(false);
+    }
   };
 
   const sortedByDensity = useMemo(() => [...crowd].sort((a, b) => b.density - a.density), [crowd]);
@@ -202,8 +211,8 @@ export default function CrowdAnalytics({ crowd: initialCrowd, predictions: initi
 }
 
 CrowdAnalytics.propTypes = {
-  crowd: PropTypes.array.isRequired,
-  predictions: PropTypes.array.isRequired,
+  crowd: PropTypes.arrayOf(CrowdDensityShape).isRequired,
+  predictions: PropTypes.arrayOf(PredictionShape).isRequired,
 };
 
 export async function getServerSideProps() {

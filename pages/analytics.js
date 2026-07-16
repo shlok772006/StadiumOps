@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import Head from "next/head";
 import ChartWidget from "../components/ChartWidget";
 import { getLiveCrowdDensity, getWeatherData, VENDOR_DATA, TRANSPORT_OPTIONS } from "../lib/stadiumData";
+import { CrowdDensityShape, WeatherShape } from "../lib/propTypeShapes";
 
 export default function Analytics({ crowd, weather }) {
   const stats = useMemo(() => {
@@ -205,8 +206,8 @@ export default function Analytics({ crowd, weather }) {
 }
 
 Analytics.propTypes = {
-  crowd: PropTypes.array.isRequired,
-  weather: PropTypes.object.isRequired,
+  crowd: PropTypes.arrayOf(CrowdDensityShape).isRequired,
+  weather: WeatherShape.isRequired,
 };
 
 export async function getServerSideProps() {

@@ -4,6 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import StadiumMap from "../components/StadiumMap";
 import { getLiveCrowdDensity, GATES, TOURNAMENT_CONTEXT } from "../lib/stadiumData";
+import { CrowdDensityShape } from "../lib/propTypeShapes";
 
 const FEATURES = [
   { icon: "👥", title: "Crowd Intelligence", desc: "AI monitors gate density in real-time and predicts congestion before it happens — with reasoning, not just numbers.", color: "var(--accent-blue)" },
@@ -176,7 +177,7 @@ function Stat({ label, value, accent }) {
 }
 
 Home.propTypes = {
-  crowd: PropTypes.array.isRequired,
+  crowd: PropTypes.arrayOf(CrowdDensityShape).isRequired,
 };
 
 Stat.propTypes = {

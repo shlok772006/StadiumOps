@@ -7,6 +7,7 @@ import { useState } from "react";
 import Head from "next/head";
 import { jsPDF } from "jspdf";
 import FormattedContent from "../components/FormattedContent";
+import { useApp } from "../components/Layout";
 
 const REPORT_TYPES = [
   { id: "crowd", label: "Crowd Management Report", icon: "👥", desc: "Density patterns, gate utilization, and crowd flow analysis" },
@@ -16,6 +17,7 @@ const REPORT_TYPES = [
 ];
 
 export default function Reports() {
+  const app = useApp();
   const [selectedType, setSelectedType] = useState("daily");
   const [report, setReport] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,17 +32,17 @@ export default function Reports() {
       const res = await fetch("/api/generate-report", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ reportType: selectedType }),
+        body: JSON.stringify({ reportType: selectedType, lang: app?.language || "English" }),
       });
       const data = await res.json();
-      if (res.ok) setReport(data.report);
-      else setError(data.error || "Failed to generate report.");
+      if (res.ok) { setReport(data.report); }
+      else { setError(data.error || "Failed to generate report."); }
     } catch (_e) { setError("Network error."); }
     finally { setLoading(false); }
   };
 
   const exportText = () => {
-    if (!report) return;
+    if (!report) { return; }
     const blob = new Blob([report], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -51,7 +53,7 @@ export default function Reports() {
   };
 
   const exportPDF = () => {
-    if (!report) return;
+    if (!report) { return; }
     try {
       const doc = new jsPDF();
 

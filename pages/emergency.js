@@ -10,12 +10,15 @@ import { GATES, EMERGENCY_PROTOCOLS, AMENITIES, getLiveCrowdDensity } from "../l
 import { formatApiError } from "../lib/formatApiError";
 import StadiumMap from "../components/StadiumMap";
 import FormattedContent from "../components/FormattedContent";
+import { CrowdDensityShape } from "../lib/propTypeShapes";
+import { useApp } from "../components/Layout";
 
 const INCIDENT_TYPES = Object.entries(EMERGENCY_PROTOCOLS).map(([key, val]) => ({
   value: key, label: val.label, severity: val.severity,
 }));
 
 export default function Emergency({ crowd }) {
+  const app = useApp();
   const [incidentType, setIncidentType] = useState("medical");
   const [incidentGate, setIncidentGate] = useState(GATES[0].id);
   const [details, setDetails] = useState("");
@@ -34,7 +37,7 @@ export default function Emergency({ crowd }) {
       const res = await fetch("/api/emergency", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ incidentType, location: incidentGate, details }),
+        body: JSON.stringify({ incidentType, location: incidentGate, details, lang: app?.language || "English" }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -178,7 +181,7 @@ export default function Emergency({ crowd }) {
       {/* Active Incidents */}
       {incidents.length > 0 && (
         <div className="card fade-up" style={{ marginBottom: 24 }}>
-          <p className="card-header accent-amber">ACTIVE INCIDENTS ({incidents.length})</p>
+          <p className="card-header accent-amber">INCIDENT TRACKER ({incidents.length})</p>
           <div className="table-wrapper">
             <table>
               <thead>
@@ -188,6 +191,7 @@ export default function Emergency({ crowd }) {
                   <th>Location</th>
                   <th>Severity</th>
                   <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -202,7 +206,27 @@ export default function Emergency({ crowd }) {
                       </span>
                     </td>
                     <td>
-                      <span className="pill pill-busy" style={{ fontSize: "0.6rem" }}>{inc.status}</span>
+                      <span className={`pill ${inc.status === "Resolved" ? "pill-normal" : "pill-busy"}`} style={{ fontSize: "0.6rem" }}>{inc.status}</span>
+                    </td>
+                    <td>
+                      {inc.status === "Active" ? (
+                        <button
+                          className="btn btn-secondary btn-sm"
+                          style={{ fontSize: "0.68rem" }}
+                          aria-label={`Resolve ${inc.type} incident at ${inc.gate}`}
+                          onClick={() => {
+                            setIncidents((prev) =>
+                              prev.map((item) =>
+                                item.id === inc.id ? { ...item, status: "Resolved" } : item
+                              )
+                            );
+                          }}
+                        >
+                          ✓ Resolve
+                        </button>
+                      ) : (
+                        <span className="mono" style={{ fontSize: "0.68rem", color: "var(--accent-green)" }}>Resolved</span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -216,7 +240,7 @@ export default function Emergency({ crowd }) {
 }
 
 Emergency.propTypes = {
-  crowd: PropTypes.array.isRequired,
+  crowd: PropTypes.arrayOf(CrowdDensityShape).isRequired,
 };
 
 export async function getServerSideProps() {

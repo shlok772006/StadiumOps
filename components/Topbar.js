@@ -55,8 +55,8 @@ export default function Topbar() {
           setResults(data.results || []);
           setShowResults(true);
         }
-      } catch (err) {
-        console.error("Search failed:", err);
+      } catch (_err) {
+        console.error("[Topbar] Search failed:", _err);
       } finally {
         setLoading(false);
       }
